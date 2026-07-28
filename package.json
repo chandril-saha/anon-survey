@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "compile": "wsl bash -lc 'cd /mnt/e/workspace/anon-survey && compact compile contracts/counter.compact managed/counter'",
+    "compile": "compact compile contracts/counter.compact managed/counter && compact compile contracts/survey.compact managed/survey",
     "compile:local": "compact compile contracts/counter.compact managed/counter",
     "test": "vitest run",
     "test:compile": "npm run compile && vitest run",

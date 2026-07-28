@@ -39,7 +39,7 @@ witness surveyIdWitness(): Uint<64>;
 // Create a new survey: increments the public survey counter and records the survey ID
 export circuit createSurvey(): [] {
     surveyCount.increment(1);
-    lastSurveyId = disclose(surveyCount.value);
+    lastSurveyId = disclose(surveyCount as Uint<64>);
 }
 
 // Submit an anonymous response: validates the private token, increments the response counter
