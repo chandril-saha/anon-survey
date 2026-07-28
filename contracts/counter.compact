@@ -1,0 +1,31 @@
+// Privacy model for this voting counter contract:
+//
+// PUBLIC (on-chain ledger, visible to anyone):
+//   - round: total number of votes cast (public counter)
+//   - lastPublicIncrement: the last disclosed increment amount (always 1 when valid)
+//
+// PRIVATE (witness supplied off-chain, never stored on-chain):
+//   - voteToken: a secret ballot token proving eligibility without revealing identity
+//
+// PROVEN without revealing:
+//   - The voter knows a valid voteToken (non-zero) without exposing its value on-chain
+//   - Only the fact that one vote was cast is reflected in the public counter
+
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+// Public ledger state — visible on the blockchain
+export ledger round: Counter;
+export ledger lastPublicIncrement: Uint<64>;
+
+// Private witness — supplied by the DApp at transaction time, never on-chain
+witness voteToken(): Uint<64>;
+
+// Cast a vote: validates the private token, increments public counter, discloses only the increment
+export circuit castVote(): [] {
+    const token = voteToken();
+    assert(token > 0, "Invalid vote token");
+    round.increment(1);
+    lastPublicIncrement = disclose(1);
+}

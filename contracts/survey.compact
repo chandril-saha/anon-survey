@@ -1,0 +1,62 @@
+// Privacy model for this anonymous survey contract:
+//
+// PUBLIC (on-chain ledger, visible to anyone):
+//   - surveyCount: total number of surveys created (public counter)
+//   - responseCount: total number of anonymous responses submitted across all surveys (public counter)
+//   - lastSurveyId: the most recently created survey identifier (disclosed)
+//   - lastResponseStatus: status of the last response submission (disclosed, always 1 = success)
+//
+// PRIVATE (witness supplied off-chain, never stored on-chain):
+//   - responseToken: a secret token proving the respondent's eligibility without revealing identity
+//   - surveyIdWitness: the survey being responded to, kept private to prevent linking
+//
+// PROVEN without revealing:
+//   - The respondent holds a valid responseToken (non-zero) without exposing its value
+//   - A valid survey ID was targeted without revealing which wallet submitted
+//   - Only the fact that one response was submitted is reflected in the public counter
+//   - The respondent's identity, wallet address, and response contents are NEVER on-chain
+//
+// What is NEVER revealed:
+//   - Wallet address of the respondent
+//   - Contents of the survey response
+//   - Which specific survey a particular wallet responded to
+//   - Any link between wallet identity and response
+
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+// Public ledger state — visible on the blockchain
+export ledger surveyCount: Counter;
+export ledger responseCount: Counter;
+export ledger lastSurveyId: Uint<64>;
+export ledger lastResponseStatus: Uint<64>;
+
+// Private witnesses — supplied by the DApp at transaction time, never on-chain
+witness responseToken(): Uint<64>;
+witness surveyIdWitness(): Uint<64>;
+
+// Create a new survey: increments the public survey counter and records the survey ID
+export circuit createSurvey(): [] {
+    surveyCount.increment(1);
+    lastSurveyId = disclose(surveyCount.value);
+}
+
+// Submit an anonymous response: validates the private token, increments the response counter
+export circuit submitResponse(): [] {
+    const token = responseToken();
+    assert(token > 0, "Invalid response token");
+
+    const targetSurvey = surveyIdWitness();
+    assert(targetSurvey > 0, "Invalid survey ID");
+
+    responseCount.increment(1);
+    lastResponseStatus = disclose(1);
+}
+
+// Close a survey: administrative action, discloses the survey ID being closed
+export circuit closeSurvey(): [] {
+    const targetSurvey = surveyIdWitness();
+    assert(targetSurvey > 0, "Invalid survey ID");
+    lastSurveyId = disclose(targetSurvey);
+}

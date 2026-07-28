@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 4%; /* #06060a */
+    --foreground: 0 0% 98%;
+    
+    --primary: 262 83% 58%; /* Purple #7c3aed */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --accent: 316 73% 52%; /* Pink #d946ef */
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --muted: 240 5% 26%;
+    --muted-foreground: 240 5% 65%;
+    
+    --card: 240 10% 6%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 240 10% 6%;
+    --popover-foreground: 0 0% 98%;
+    
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 262 83% 58%;
+    
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased font-sans min-h-screen selection:bg-primary/30 selection:text-primary-foreground;
+  }
+  
+  /* Custom scrollbar for webkit */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+  }
+}
+
+@layer components {
+  .page-enter {
+    @apply animate-fade-in;
+  }
+}

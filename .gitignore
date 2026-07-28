@@ -1,0 +1,8 @@
+node_modules/
+managed/
+dist/
+build/
+.env
+.env.local
+.DS_Store
+.midnight-wallet-state/
