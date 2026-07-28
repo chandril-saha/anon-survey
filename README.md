@@ -255,7 +255,8 @@ The initial idea was a privacy-preserving voting counter. During development, th
 
 ## Screenshots
 
-*Screenshots will be added after UI finalization.*
+### Proof of Compilation
+![Successful Compilation](./public/compilation.png)
 
 ---
 
