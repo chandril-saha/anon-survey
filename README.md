@@ -255,6 +255,12 @@ The initial idea was a privacy-preserving voting counter. During development, th
 
 ## Screenshots
 
+### UI Screenshots
+![UI Screenshot 1](./public/photo_2026-07-28_12-48-21.jpg)
+![UI Screenshot 2](./public/photo_2026-07-28_12-48-26.jpg)
+![UI Screenshot 3](./public/photo_2026-07-28_12-48-36.jpg)
+![UI Screenshot 4](./public/photo_2026-07-28_12-48-44.jpg)
+
 ### Proof of Compilation
 ![Successful Compilation](./public/compilation.png)
 
