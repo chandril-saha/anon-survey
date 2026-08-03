@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../../",
+  "sources": ["contracts/survey.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAwBA;;;;;;;;;;;;;;;;MAeA,AAAA,YAGC;;;;;;;;;;;;;;;;;;;;;;OAAA;MAGD,AAAA,cASC;;;;;;;;;;;;;;;;;;;;;;OAAA;MAGD,AAAA,WAIC;;;;;;;;;;;;;;;;;;;;;;OAAA;;;;;;;;;;;;GACA;EAtCD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAKA;;;;;;;;;yEAAmC;IACnC;;;;;;;;;yEAAqC;IACrC;;;;;;;;;yEAAqC;IACrC;;;;;;;;;yEAA2C;;;;;;;GA8B1C;EA3BD,AAAA,gBAAkC;;0DAAlC,aAAkC;;;;;;;;;;;;;;GAAA;EAClC,AAAA,kBAAoC;;0DAApC,eAAoC;;;;;;;;;;;;;;GAAA;EAGpC,AAAA,eAGC;UAFG,KAAW;IAAX;;;;;;;;;;6FAAA,KAAW;;;;wEAAA;UACX,KAAY,2BAAY;;;;;;;;;;;+GAAW;IAAnC;;;;;;;2HAAA,KAAY;;yEAAA;;GACf;EAGD,AAAA,iBASC;UARS,OAAuB;4BACtB,OAAK;UAEN,cAAgC;4BAC/B,cAAY;UAEnB,KAAa;IAAb;;;;;;;;;;6FAAA,KAAa;;;;wEAAA;UACb,KAAkB;IAAlB;;;;;;;2HAAA,KAAkB;;yEAAA;;GACrB;EAGD,AAAA,cAIC;UAHS,cAAgC;4BAC/B,cAAY;IACnB;;;;;;;2HAAwB,cAAY;;yEAAxB;;GACf;;;;;;;;;;;;;;;;IAhCD;qCAAA;;;;;;;;;;;0GAAmC;KAAA;IACnC;qCAAA;;;;;;;;;;;0GAAqC;KAAA;IACrC;qCAAA;;;;;;;;;;;0GAAqC;KAAA;IACrC;qCAAA;;;;;;;;;;;0GAA2C;KAAA;;;;;;;;;;;;"
+}

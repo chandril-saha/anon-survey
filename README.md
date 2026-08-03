@@ -241,10 +241,9 @@ npm test
 
 | Network | Address |
 |---------|---------|
-| **Preview** | Pending Deployment |
-| **Preprod** | Pending Deployment |
+| **Preview** | `ec92fc9bee5a3376d422855d85e72cf4d280cce09c5c0b98f26f5c56ceaebf2a` |
 
-**Status:** Pending Deployment
+**Status:** Deployed ✅
 
 ---
 
