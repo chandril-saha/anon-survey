@@ -8,8 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "compile": "compact compile contracts/counter.compact managed/counter && compact compile contracts/survey.compact managed/survey",
-    "compile:local": "compact compile contracts/counter.compact managed/counter",
+    "compile": "compact compile contracts/survey.compact managed/survey",
+    "compile:local": "compact compile contracts/survey.compact managed/survey",
     "test": "vitest run",
     "test:compile": "npm run compile && vitest run",
     "deploy": "npx tsx src/deploy.ts",
@@ -44,7 +44,6 @@
     "ws": "^8.20.0"
   },
   "devDependencies": {
-    "@esbuild/linux-x64": "^0.28.1",
     "@types/node": "^22.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

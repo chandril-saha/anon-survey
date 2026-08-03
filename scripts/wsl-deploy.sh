@@ -12,7 +12,7 @@ echo "node: $(which node) $(node --version)"
 echo "npm:  $(which npm) $(npm --version)"
 echo "====================="
 
-cd /mnt/e/workspace/anon-survey
+cd /mnt/d/CODING/web3/anon-survey
 
 # Install the Linux esbuild binary if not already present
 if [ ! -d "node_modules/@esbuild/linux-x64" ]; then

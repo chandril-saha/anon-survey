@@ -16,8 +16,7 @@ import { levelPrivateStateProvider } from '@midnight-ntwrk/midnight-js-level-pri
 import { NodeZkConfigProvider } from '@midnight-ntwrk/midnight-js-node-zk-config-provider';
 import { CompiledContract } from '@midnight-ntwrk/compact-js';
 
-// @ts-expect-error Required for wallet sync
-globalThis.WebSocket = WebSocket;
+globalThis.WebSocket = WebSocket as any;
 
 const { network, config: networkConfig } = resolveNetwork();
 const SEED = getOrCreateSeed(network);
@@ -45,7 +44,7 @@ async function waitForProofServer(maxAttempts = 60, delayMs = 2000): Promise<boo
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const zkConfigPath = path.resolve(__dirname, '..', 'managed', 'counter');
+const zkConfigPath = path.resolve(__dirname, '..', 'managed', 'survey');
 const contractPath = path.join(zkConfigPath, 'contract', 'index.js');
 
 if (!fs.existsSync(contractPath)) {
@@ -53,9 +52,9 @@ if (!fs.existsSync(contractPath)) {
   process.exit(1);
 }
 
-const Counter = await import(pathToFileURL(contractPath).href);
+const Survey = await import(pathToFileURL(contractPath).href);
 
-const compiledContract = CompiledContract.make('counter', Counter.Contract).pipe(
+const compiledContract = CompiledContract.make('survey', Survey.Contract).pipe(
   CompiledContract.withVacantWitnesses,
   CompiledContract.withCompiledFileAssets(zkConfigPath),
 );
@@ -72,7 +71,7 @@ async function createProviders(walletCtx: WalletContext) {
         { shieldedSecretKeys: walletCtx.shieldedSecretKeys, dustSecretKey: walletCtx.dustSecretKey },
         { ttl: ttl ?? new Date(Date.now() + 30 * 60 * 1000) },
       );
-      const signedRecipe = await walletCtx.wallet.signRecipe(recipe, (payload) =>
+      const signedRecipe = await walletCtx.wallet.signRecipe(recipe, (payload: any) =>
         walletCtx.unshieldedKeystore.signData(payload),
       );
       return walletCtx.wallet.finalizeRecipe(signedRecipe);
@@ -132,7 +131,7 @@ async function main() {
     const start = Date.now();
     while (true) {
       await new Promise((r) => setTimeout(r, 10_000));
-      const s = await Rx.firstValueFrom(walletCtx.wallet.state().pipe(Rx.filter((x) => x.isSynced)));
+      const s = await Rx.firstValueFrom(walletCtx.wallet.state().pipe(Rx.filter((x: any) => x.isSynced)));
       const tn = s.unshielded.balances[unshieldedToken().raw] ?? 0n;
       if (tn > 0n) {
         console.log(`\n  Funded! tNIGHT balance: ${tn.toLocaleString()}\n`);
@@ -151,7 +150,7 @@ async function main() {
   }
 
   console.log('─── DUST Token Setup ───────────────────────────────────────────\n');
-  const dustState = await Rx.firstValueFrom(walletCtx.wallet.state().pipe(Rx.filter((s) => s.isSynced)));
+  const dustState = await Rx.firstValueFrom(walletCtx.wallet.state().pipe(Rx.filter((s: any) => s.isSynced)));
   const unregisteredUtxos = dustState.unshielded.availableCoins.filter(
     (c: any) => !c.meta?.registeredForDustGeneration,
   );
@@ -160,7 +159,7 @@ async function main() {
     const recipe = await walletCtx.wallet.registerNightUtxosForDustGeneration(
       unregisteredUtxos,
       walletCtx.unshieldedKeystore.getPublicKey(),
-      (payload) => walletCtx.unshieldedKeystore.signData(payload),
+      (payload: any) => walletCtx.unshieldedKeystore.signData(payload),
     );
     const finalized = await walletCtx.wallet.finalizeRecipe(recipe);
     await walletCtx.wallet.submitTransaction(finalized);
@@ -171,8 +170,8 @@ async function main() {
     await Rx.firstValueFrom(
       walletCtx.wallet.state().pipe(
         Rx.throttleTime(5000),
-        Rx.filter((s) => s.isSynced),
-        Rx.filter((s) => s.dust.balance(new Date()) > 0n),
+        Rx.filter((s: any) => s.isSynced),
+        Rx.filter((s: any) => s.dust.balance(new Date()) > 0n),
       ),
     );
   }
