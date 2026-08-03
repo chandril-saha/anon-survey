@@ -263,9 +263,3 @@ The initial idea was a privacy-preserving voting counter. During development, th
 
 ### Proof of Compilation
 ![Successful Compilation](./public/compilation.png)
-
----
-
-## License
-
-MIT
