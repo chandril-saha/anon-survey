@@ -263,3 +263,6 @@ The initial idea was a privacy-preserving voting counter. During development, th
 
 ### Proof of Compilation
 ![Successful Compilation](./public/compilation.png)
+
+### Proof of Deployment
+![Contract Deployed](./public/deployment.png)
