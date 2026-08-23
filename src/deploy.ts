@@ -54,8 +54,14 @@ if (!fs.existsSync(contractPath)) {
 
 const Survey = await import(pathToFileURL(contractPath).href);
 
+const dummyWitnesses = {
+  responseToken: (context: any) => [context.privateState, 0n],
+  surveyIdWitness: (context: any) => [context.privateState, 0n],
+};
+
 const compiledContract = CompiledContract.make('survey', Survey.Contract).pipe(
-  CompiledContract.withVacantWitnesses,
+  // @ts-ignore
+  CompiledContract.withWitnesses(dummyWitnesses),
   CompiledContract.withCompiledFileAssets(zkConfigPath),
 );
 
@@ -189,7 +195,7 @@ async function main() {
   await new Promise((r) => setTimeout(r, 6000));
 
   console.log('  Deploying contract...\n');
-  const deployed = await deployContract(providers, {
+  const deployed = await deployContract(providers as any, {
     compiledContract: compiledContract as any,
     args: [],
   });

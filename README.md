@@ -241,7 +241,7 @@ npm test
 
 | Network | Address |
 |---------|---------|
-| **Preview** | `ec92fc9bee5a3376d422855d85e72cf4d280cce09c5c0b98f26f5c56ceaebf2a` |
+| **Preview** | `a50deaf97ab5f67f7d4362c019cd8be68f8f7051e69d23931a2b82899c6195da` |
 
 **Status:** Deployed ✅
 
