@@ -1,7 +1,56 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ClipboardList, BarChart3, Info, Home as HomeIcon, ListChecks } from 'lucide-react';
+import { ClipboardList, BarChart3, Info, Home as HomeIcon, ListChecks, Wallet } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { Button } from './ui/Button';
+import { blockchainService } from '../lib/blockchain';
+import toast from 'react-hot-toast';
+import { useState, useEffect } from 'react';
+
+function WalletConnectButton() {
+  const [address, setAddress] = useState<string | null>(blockchainService.getAddress());
+  const [isConnecting, setIsConnecting] = useState(false);
+
+  useEffect(() => {
+    // Check if already connected on mount
+    if (blockchainService.isConnected()) {
+      setAddress(blockchainService.getAddress());
+    }
+  }, []);
+
+  const handleConnect = async () => {
+    if (address) {
+      await blockchainService.disconnectWallet();
+      setAddress(null);
+      toast.success("Wallet disconnected");
+      return;
+    }
+
+    try {
+      setIsConnecting(true);
+      const res = await blockchainService.connectWallet();
+      setAddress(res.address);
+      toast.success("Connected to Lace Wallet");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to connect wallet");
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  return (
+    <Button 
+      variant={address ? "outline" : "default"}
+      size="sm"
+      onClick={handleConnect}
+      disabled={isConnecting}
+      className={address ? "border-primary text-primary" : ""}
+    >
+      <Wallet className="w-4 h-4 mr-2" />
+      {isConnecting ? "Connecting..." : address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Connect Wallet"}
+    </Button>
+  );
+}
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -56,6 +105,10 @@ export default function Layout({ children }: { children: ReactNode }) {
                   </Link>
                 );
               })}
+              
+              <div className="pl-4 border-l border-white/10 flex items-center">
+                <WalletConnectButton />
+              </div>
             </nav>
           </div>
         </header>

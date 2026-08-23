@@ -170,8 +170,6 @@ export const surveyService = {
     walletAddress: string,
     answers: Record<string, string | number>
   ): Promise<{ txHash: string }> {
-    await delay(2500); // Simulates ZK proof generation
-
     const key = `${surveyId}:${walletAddress}`;
     if (submittedWallets.has(key)) {
       throw new Error('You have already submitted a response to this survey.');
@@ -181,6 +179,17 @@ export const surveyService = {
     if (!survey) throw new Error('Survey not found.');
     if (survey.status !== 'active') throw new Error('This survey is no longer accepting responses.');
 
+    // 1. Invoke the Midnight Smart Contract to generate the ZK Proof and submit it
+    try {
+      // @ts-ignore
+      const { blockchainService } = await import('./blockchain');
+      await blockchainService.submitSurveyResponseTx(surveyId, walletAddress);
+    } catch (e: any) {
+      console.error("Contract interaction failed:", e);
+      throw new Error(`Smart contract execution failed: ${e.message}`);
+    }
+
+    // 2. Once the contract succeeds, save the mock response locally for analytics
     submittedWallets.add(key);
     survey.responseCount += 1;
 

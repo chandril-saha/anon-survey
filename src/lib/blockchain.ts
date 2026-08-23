@@ -1,100 +1,55 @@
-export interface MidnightWalletAPI {
-  connect: (networkId: string) => Promise<MidnightDAppAPI>;
-  name?: string;
-  version?: string;
-}
-
-export interface MidnightDAppAPI {
-  getUnshieldedAddress: () => Promise<unknown>;
-  getUnshieldedBalances: () => Promise<unknown>;
-  getShieldedAddresses?: () => Promise<unknown[]>;
-  getShieldedBalances?: () => Promise<unknown[]>;
-  getConfiguration: () => Promise<unknown>;
-  signTransaction: (tx: unknown) => Promise<unknown>;
-  submitTransaction: (tx: unknown) => Promise<unknown>;
-}
+import type { InitialAPI, ConnectedAPI, ProvingProvider, Configuration } from '@midnight-ntwrk/dapp-connector-api';
+import { dappConnectorProofProvider } from '@midnight-ntwrk/midnight-js-dapp-connector-proof-provider';
+import { createCircuitCallTxInterface, submitCallTx } from '@midnight-ntwrk/midnight-js-contracts';
+import { CompiledContract } from '@midnight-ntwrk/compact-js';
+import * as Survey from '../../managed/survey/contract/index.js';
+import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
+import { indexerPublicDataProvider } from '@midnight-ntwrk/midnight-js-indexer-public-data-provider';
 
 declare global {
   interface Window {
     midnight?: {
-      [key: string]: MidnightWalletAPI | undefined;
+      mnLace?: InitialAPI;
+      [key: string]: InitialAPI | undefined;
     };
   }
 }
 
 class BlockchainService {
-  private api: MidnightDAppAPI | null = null;
+  private api: ConnectedAPI | null = null;
   private currentAddress: string | null = null;
   private currentNetwork: string | number | null = null;
-  private currentBalances: any = null;
+  private contractAddress: string | null = import.meta.env.VITE_CONTRACT_ADDRESS || null;
+  private compiledContract: any = null;
 
   async connectWallet(): Promise<{ address: string; network: string | number; balances: any }> {
     if (this.api && this.currentAddress) {
       return { 
         address: this.currentAddress, 
         network: this.currentNetwork || 'preview', 
-        balances: this.currentBalances 
+        balances: {} 
       };
     }
 
-    if (!window.midnight) {
-      throw new Error("Please install or enable a Midnight compatible wallet (like Lace).");
+    if (!window.midnight || !window.midnight.mnLace) {
+      throw new Error("Lace wallet not found. Please install the Lace browser extension.");
     }
 
-    // Dynamically discover the wallet provider (Lace injects a UUID key)
-    const walletKeys = Object.keys(window.midnight);
-    if (walletKeys.length === 0) {
-      throw new Error("Midnight wallet object found, but no providers are available.");
-    }
-    
-    // Grab the first available wallet provider
-    const walletKey = walletKeys[0];
-    const wallet = window.midnight[walletKey];
-
-    if (!wallet || typeof wallet.connect !== 'function') {
-      throw new Error("Invalid wallet API detected (missing connect method).");
-    }
+    const provider = window.midnight.mnLace;
 
     try {
-      this.api = await wallet.connect("preview");
+      this.api = await provider.connect("preview");
       
-      const rawAddress = await this.api.getUnshieldedAddress();
-      console.log("Raw Address from wallet:", rawAddress);
-      
-      let addressStr = String(rawAddress);
-      if (Array.isArray(rawAddress)) {
-        addressStr = String(rawAddress[0]);
-      } else if (rawAddress && typeof rawAddress === 'object') {
-        addressStr = String(Object.values(rawAddress)[0]);
-      }
-      const address = addressStr;
-      
-      let balance = null;
-      try {
-        if (typeof this.api.getUnshieldedBalances === 'function') {
-          balance = await this.api.getUnshieldedBalances();
-        }
-      } catch (e) {
-        console.warn("Could not fetch balances", e);
-      }
-      
-      let config: any = "preview";
-      try {
-        if (typeof this.api.getConfiguration === 'function') {
-          config = await this.api.getConfiguration();
-        }
-      } catch (e) {
-        console.warn("Could not fetch configuration", e);
-      }
-
-      this.currentAddress = address;
+      const addrObj = await this.api.getUnshieldedAddress();
+      this.currentAddress = addrObj.unshieldedAddress;
       this.currentNetwork = "preview";
-      this.currentBalances = balance || {};
+      
+      setNetworkId('preview');
 
       return {
         address: this.currentAddress,
         network: this.currentNetwork,
-        balances: this.currentBalances
+        balances: {}
       };
       
     } catch (e: any) {
@@ -110,7 +65,6 @@ class BlockchainService {
     this.api = null;
     this.currentAddress = null;
     this.currentNetwork = null;
-    this.currentBalances = null;
   }
 
   isConnected(): boolean {
@@ -121,26 +75,86 @@ class BlockchainService {
     return this.currentAddress;
   }
 
-  getNetwork(): string | number | null {
-    return this.currentNetwork;
-  }
-
-  getBalance(): any {
-    return this.currentBalances;
-  }
-
-  async signTransaction(tx: unknown): Promise<unknown> {
-    if (!this.api) throw new Error("Wallet not connected.");
-    throw new Error("Contract not deployed");
-  }
-
-  async submitTransaction(tx: unknown): Promise<unknown> {
-    if (!this.api) throw new Error("Wallet not connected.");
-    throw new Error("Contract not deployed");
-  }
-
   getContractAddress(): string | null {
-    return import.meta.env.VITE_CONTRACT_ADDRESS || null;
+    return this.contractAddress;
+  }
+
+  getCompiledContract(dummyWitnesses: any) {
+    if (!this.compiledContract) {
+      // @ts-ignore
+      this.compiledContract = CompiledContract.make('survey', Survey.Contract).pipe(
+        // @ts-ignore
+        CompiledContract.withWitnesses(dummyWitnesses)
+      );
+    }
+    return this.compiledContract;
+  }
+
+  async buildProviders(dummyWitnesses: any) {
+    if (!this.api) throw new Error("Wallet not connected.");
+    
+    const config = await this.api.getConfiguration();
+    
+    const keyMaterialProvider = {
+      getZKIR: async (location: string) => new Uint8Array(await (await fetch(`/${location}.zkir`)).arrayBuffer()),
+      getProverKey: async (location: string) => new Uint8Array(await (await fetch(`/${location}.pk`)).arrayBuffer()),
+      getVerifierKey: async (location: string) => new Uint8Array(await (await fetch(`/${location}.vk`)).arrayBuffer()),
+    };
+
+    const provingProvider = await this.api.getProvingProvider(keyMaterialProvider);
+    const proofProvider = dappConnectorProofProvider(provingProvider);
+
+    const publicDataProvider = indexerPublicDataProvider(
+      config.indexerUri,
+      config.indexerWsUri
+    );
+
+    return {
+      proofProvider,
+      publicDataProvider,
+      walletProvider: {
+        coinPublicKey: (await this.api.getShieldedAddresses()).shieldedCoinPublicKey,
+        balanceTx: this.api.balanceUnsealedTransaction.bind(this.api),
+      },
+    };
+  }
+
+  async submitSurveyResponseTx(surveyId: string, walletAddress: string): Promise<string> {
+    if (!this.contractAddress) {
+      throw new Error("Contract address is not set in environment.");
+    }
+    if (!this.api) {
+      throw new Error("Wallet not connected.");
+    }
+
+    // 1. Construct the dummy witnesses returning the tuple `[privateState, value]`
+    const dummyWitnesses = {
+      responseToken: (context: any) => [context.privateState, 1n], // Must be > 0
+      surveyIdWitness: (context: any) => [context.privateState, 1n], // Must be > 0
+    };
+
+    // 2. Build the providers and the compiled contract
+    const providers = await this.buildProviders(dummyWitnesses);
+    const compiledContract = this.getCompiledContract(dummyWitnesses);
+
+    // 3. Create the circuit call interface
+    const callTxInterface = createCircuitCallTxInterface(
+      providers as any,
+      compiledContract,
+      this.contractAddress
+    );
+
+    // 4. Create unproven transaction using submitResponse circuit
+    const unprovenTx = await callTxInterface.submitResponse();
+
+    // 5. Submit to network
+    // The DApp connector balanceUnsealedTransaction handles fee balancing, and submitTransaction handles submission!
+    // But `submitCallTx` from midnight-js-contracts automatically balances and submits it via the providers!
+    const result = await submitCallTx(providers as any, {
+      unprovenTx: unprovenTx
+    });
+
+    return "Transaction successfully submitted!";
   }
 }
 
