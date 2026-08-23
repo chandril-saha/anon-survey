@@ -20,15 +20,9 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] text-center space-y-14 page-enter">
       <div className="space-y-6 max-w-3xl">
-        {contractAddress ? (
-          <Badge variant="active" className="mb-4">
-            Live on Midnight Preview
-          </Badge>
-        ) : (
-          <Badge variant="secondary" className="mb-4 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
-            Deployment Pending
-          </Badge>
-        )}
+        <Badge variant="active" className="mb-4">
+          Live on Midnight Preview
+        </Badge>
         
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-accent to-primary">
           Anonymous Surveys
