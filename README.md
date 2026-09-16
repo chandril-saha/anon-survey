@@ -245,6 +245,7 @@ npm test
 - **Preprod / Preview Contract Address**: `a50deaf97ab5f67f7d4362c019cd8be68f8f7051e69d23931a2b82899c6195da`
 - **Network**: Midnight Testnet (Preview)
 - **Framework**: React + Vite + TailwindCSS + Midnight SDK (dapp-connector-api)
+- **3+ tests passing**
 
 
 ## Product Proposal: Anonymous Survey Platform
