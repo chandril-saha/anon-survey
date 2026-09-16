@@ -248,17 +248,6 @@ npm test
 - **Network**: Midnight Testnet (Preview)
 - **Framework**: React + Vite + TailwindCSS + Midnight SDK (dapp-connector-api)
 
-### Level 3 Checklist Completion
-- [x] Fully functional dApp using Midnight's privacy model
-- [x] Minimum 3 tests passing (`npm test`)
-- [x] CI/CD pipeline running (GitHub Actions)
-- [x] Approved idea submitted from the provided idea list
-- [x] Minimum 10 meaningful commits (currently 16+ commits)
-- [x] Public GitHub repository with complete README
-- [x] README "privacy model" section
-- [x] Product proposal formatted
-
----
 
 ## Product Proposal: Anonymous Survey Platform
 
