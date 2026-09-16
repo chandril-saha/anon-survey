@@ -242,8 +242,6 @@ npm test
 ## Hackathon Submission Details
 
 - **Live Demo**: [https://anon-survey-midnight.vercel.app](https://anon-survey-midnight.vercel.app)
-- **Demo Video (1 min)**: [Insert YouTube/Loom Link Here] 👈 *(ACTION REQUIRED)*
-- **Test Output Screenshot**: [Insert Screenshot Here] 👈 *(ACTION REQUIRED)*
 - **Preprod / Preview Contract Address**: `a50deaf97ab5f67f7d4362c019cd8be68f8f7051e69d23931a2b82899c6195da`
 - **Network**: Midnight Testnet (Preview)
 - **Framework**: React + Vite + TailwindCSS + Midnight SDK (dapp-connector-api)
@@ -277,3 +275,6 @@ By leveraging Midnight's zero-knowledge primitives and the Compact smart contrac
 
 ### Proof of Deployment
 ![Contract Deployed](./public/deployment.png)
+
+### Test Proof
+![Test Proof](./public/test.png)
