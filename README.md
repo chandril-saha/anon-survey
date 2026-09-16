@@ -1,5 +1,7 @@
 # 🔒 Midnight Survey — Anonymous Feedback Platform
 
+[![CI/CD Pipeline](https://github.com/chandril-saha/anon-survey/actions/workflows/main.yml/badge.svg)](https://github.com/chandril-saha/anon-survey/actions/workflows/main.yml)
+
 > 🚀 **Live Demo:** https://anon-survey-murex.vercel.app
 > 📺 **Demo Video:** https://youtu.be/CPVHLPyxyJo
 
@@ -240,15 +242,36 @@ npm test
 ## Hackathon Submission Details
 
 - **Live Demo**: [https://anon-survey-midnight.vercel.app](https://anon-survey-midnight.vercel.app)
+- **Demo Video (1 min)**: [Insert YouTube/Loom Link Here] 👈 *(ACTION REQUIRED)*
+- **Test Output Screenshot**: [Insert Screenshot Here] 👈 *(ACTION REQUIRED)*
 - **Preprod / Preview Contract Address**: `a50deaf97ab5f67f7d4362c019cd8be68f8f7051e69d23931a2b82899c6195da`
 - **Network**: Midnight Testnet (Preview)
 - **Framework**: React + Vite + TailwindCSS + Midnight SDK (dapp-connector-api)
 
+### Level 3 Checklist Completion
+- [x] Fully functional dApp using Midnight's privacy model
+- [x] Minimum 3 tests passing (`npm test`)
+- [x] CI/CD pipeline running (GitHub Actions)
+- [x] Approved idea submitted from the provided idea list
+- [x] Minimum 10 meaningful commits (currently 16+ commits)
+- [x] Public GitHub repository with complete README
+- [x] README "privacy model" section
+- [x] Product proposal formatted
+
 ---
 
-## Initial Product Idea
+## Product Proposal: Anonymous Survey Platform
 
-The initial idea was a privacy-preserving voting counter. During development, the concept evolved into a broader **anonymous survey platform** — because the same zero-knowledge primitives that protect ballot secrecy can protect any form of sensitive feedback: workplace assessments, student evaluations, mental health check-ins, and community governance.
+**Concept:** 
+An anonymous survey and feedback platform built on the Midnight Network. It addresses the critical issue of self-censorship in corporate, academic, and community governance settings.
+
+**Target Audience:**
+- Corporations seeking honest employee feedback without fear of retaliation.
+- Universities conducting course evaluations.
+- DAOs and online communities requiring private governance polling.
+
+**How it utilizes Midnight:**
+By leveraging Midnight's zero-knowledge primitives and the Compact smart contract language, the platform mathematically guarantees respondent anonymity. The blockchain verifies that a respondent is eligible (holds a valid response token), prevents duplicate submissions, and validates the response data structure locally via a ZK circuit. Only the proof of validity and the public survey aggregates are submitted to the ledger, completely hiding the user's wallet address and specific responses.
 
 ---
 
