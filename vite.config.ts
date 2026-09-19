@@ -20,6 +20,19 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext',
+    },
+    exclude: [
+      '@midnight-ntwrk/ledger-v8',
+      '@midnight-ntwrk/midnight-js-ledger',
+      '@midnight-ntwrk/midnight-js-protocol'
+    ]
+  },
+  build: {
+    target: 'esnext',
+  },
   server: {
     port: 3000,
   }
